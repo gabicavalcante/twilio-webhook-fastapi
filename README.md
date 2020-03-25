@@ -4,8 +4,7 @@
 
 - [`black`](https://github.com/psf/black)
 - [`flake8`](http://flake8.pycqa.org/en/latest/)
- 
-## flask run
+- 
 
 #### virtualenv
 
