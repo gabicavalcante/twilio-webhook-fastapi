@@ -7,25 +7,32 @@ from dynaconf import settings
 
 app = FastAPI()
 
-MEDIA_URL = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
- 
-class Message(BaseModel):
-    Body: str
-    From: str
+media_schema = {
+    "god boy": "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80",
+    "not found": "https://images.unsplash.com/photo-1520004434532-668416a08753?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80",
+}
+
+class Media(BaseModel):
+    url: str
+    tag : str
 
 
-@app.post("/bot")
-async def bot(request: Request):
-    form_ = await request.form()
-    print(form_) 
-    return "hello"
+@app.post("/add/media")
+async def add_media(media: Media): 
+    media_schema[media.tag] = media.url
+    return {"message": "media added"}
 
 
 @app.post("/chat")
 async def chat(From: str = Form(...), Body: str = Form(...)): 
     response = MessagingResponse()
-    msg = response.message(f"{From} | {Body}")
-    msg.media(MEDIA_URL)
+
+    if media_schema.get(Body.lower().strip(), None):
+        msg = response.message(f"Hi {From} | {Body}")
+        msg.media(media_schema.get(Body.lower().strip()))
+    else:
+        msg = response.message(f"Hi {From} | this tag was not found")
+        msg.media(media_schema.get("not found"))
     return Response(content=str(response), media_type="application/xml")
 
 
