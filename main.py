@@ -1,40 +1,36 @@
-from fastapi import FastAPI, Form, Request, HTTPException
+from fastapi import FastAPI, Form, Request, HTTPException, Response
 from pydantic import BaseModel
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.request_validator import RequestValidator
 
+from dynaconf import settings
+
 app = FastAPI()
 
-
-def bot_reply(text: str) -> str:
-    return "Thank you, we have received your message"
-
-
+MEDIA_URL = "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80"
+ 
 class Message(BaseModel):
-    sender: str
-    message: str
-
-
-@app.post("/chat")
-async def chat(message: Message):
-    response = bot_reply(message.sender, message.message)
-    return response
+    Body: str
+    From: str
 
 
 @app.post("/bot")
-async def bot(From: str = Form(...), Body: str = Form(...)):
-    resp = MessagingResponse()
-    msg = resp.message()
-
-    incoming_msg = Body.strip().lower()
-
-    response = bot_reply(incoming_msg)
-    msg.body(response)
-    return str(msg)
+async def bot(request: Request):
+    form_ = await request.form()
+    print(form_) 
+    return "hello"
 
 
-@app.post("/security/bot")
-async def security_bot(request: Request):
+@app.post("/chat")
+async def chat(From: str = Form(...), Body: str = Form(...)): 
+    response = MessagingResponse()
+    msg = response.message(f"{From} | {Body}")
+    msg.media(MEDIA_URL)
+    return Response(content=str(response), media_type="application/xml")
+
+
+@app.post("/security/chat")
+async def security_chat(request: Request):
     validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
 
     form_ = await request.form()
@@ -44,12 +40,9 @@ async def security_bot(request: Request):
         raise HTTPException(status_code=400, detail="Erro Twilio Signature")
 
     Body = form_.get("Body")
+    From = form_.get("From")
 
-    resp = MessagingResponse()
-    msg = resp.message()
-
-    incoming_msg = Body.strip().lower()
-
-    response = bot_reply(incoming_msg)
-    msg.body(response)
-    return str(msg)
+    response = MessagingResponse()
+    msg = response.message(f"{From} | {Body}")
+    msg.media(MEDIA_URL)
+    return Response(content=str(response), media_type="application/xml")
