@@ -27,6 +27,11 @@ $ pip install -r requirements.txt
 $  uvicorn app:app --reload
 ```
 
+#### add media
+
+```
+$ curl -X POST --data '{"tag":"cute cat","url":"https://images.unsplash.com/photo-1572097664187-7b183a6bda78?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80"}' -H "Content-Type: application/json"  http://127.0.0.1:8000/add/media
+```
 
 #### references
 

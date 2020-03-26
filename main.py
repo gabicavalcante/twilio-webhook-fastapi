@@ -14,11 +14,12 @@ media_schema = {
 
 class Media(BaseModel):
     url: str
-    tag : str
+    tag: str
 
 
 @app.post("/add/media")
 async def add_media(media: Media): 
+    print("ok")
     media_schema[media.tag] = media.url
     return {"message": "media added"}
 
