@@ -28,9 +28,10 @@ async def add_media(media: Media):
 async def chat(From: str = Form(...), Body: str = Form(...)): 
     response = MessagingResponse()
 
-    if media_schema.get(Body.lower().strip(), None):
+    content = Body.lower().strip()
+    if media_schema.get(content, None):
         msg = response.message(f"Hi {From} | {Body}")
-        msg.media(media_schema.get(Body.lower().strip()))
+        msg.media(media_schema.get(content))
     else:
         msg = response.message(f"Hi {From} | this tag was not found")
         msg.media(media_schema.get("not found"))
