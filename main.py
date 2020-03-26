@@ -48,10 +48,14 @@ async def security_chat(request: Request):
     ):
         raise HTTPException(status_code=400, detail="Erro Twilio Signature")
 
-    Body = form_.get("Body")
+    Body = form_.get("Body").lower().strip()
     From = form_.get("From")
 
     response = MessagingResponse()
-    msg = response.message(f"{From} | {Body}")
-    msg.media(MEDIA_URL)
+    if media_schema.get(Body, None):
+        msg = response.message(f"Hi {From} | {Body}")
+        msg.media(media_schema.get(Body))
+    else:
+        msg = response.message(f"Hi {From} | this tag was not found")
+        msg.media(media_schema.get("not found"))
     return Response(content=str(response), media_type="application/xml")
