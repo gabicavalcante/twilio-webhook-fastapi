@@ -24,7 +24,7 @@ async def add_media(media: Media):
     return {"message": "media added"}
 
 
-@app.post("/chat")
+@app.post("/webhook")
 async def chat(From: str = Form(...), Body: str = Form(...)): 
     response = MessagingResponse()
 
