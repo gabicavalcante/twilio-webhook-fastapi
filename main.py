@@ -18,13 +18,12 @@ class Media(BaseModel):
 
 
 @app.post("/add/media")
-async def add_media(media: Media): 
-    print("ok")
+async def add_media(media: Media):
     media_schema[media.tag] = media.url
     return {"message": "media added"}
 
 
-@app.post("/webhook")
+@app.post("/hook")
 async def chat(From: str = Form(...), Body: str = Form(...)): 
     response = MessagingResponse()
 
@@ -38,15 +37,15 @@ async def chat(From: str = Form(...), Body: str = Form(...)):
     return Response(content=str(response), media_type="application/xml")
 
 
-@app.post("/security/chat")
+@app.post("/security/hook")
 async def security_chat(request: Request):
     validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
 
-    form_ = await request.form()
+    form_ = await request.form() 
     if not validator.validate(
         str(request.url), dict(form_.items()), request.headers["X-Twilio-Signature"]
     ):
-        raise HTTPException(status_code=400, detail="Erro Twilio Signature")
+        raise HTTPException(status_code=400, detail="Error Twilio Signature")
 
     Body = form_.get("Body").lower().strip()
     From = form_.get("From")
