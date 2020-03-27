@@ -1,10 +1,15 @@
 from fastapi import FastAPI, Form, Request, HTTPException, Response
-from pydantic import BaseModel
+from pydantic import BaseModel, BaseSettings
 from twilio.twiml.messaging_response import MessagingResponse
-from twilio.request_validator import RequestValidator
+from twilio.request_validator import RequestValidator 
 
-from dynaconf import settings
+class Settings(BaseSettings):
+    TWILIO_AUTH_TOKEN: str
 
+    class Config:
+         env_file = ".env"
+
+settings = Settings()
 app = FastAPI()
 
 media_schema = {
@@ -24,7 +29,7 @@ async def add_media(media: Media):
 
 
 @app.post("/hook")
-async def chat(From: str = Form(...), Body: str = Form(...)): 
+async def chat(From: str = Form(...), Body: str = Form(...)):
     response = MessagingResponse()
 
     content = Body.lower().strip()

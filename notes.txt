@@ -1,0 +1,1 @@
+{'SmsMessageSid': 'SM5b924259c011ab83f22b4874ae7e270c', 'NumMedia': '0', 'SmsSid': 'SM5b924259c011ab83f22b4874ae7e270c', 'SmsStatus': 'received', 'Body': 'Cute cat', 'To': 'whatsapp:+14155238886', 'NumSegments': '1', 'MessageSid': 'SM5b924259c011ab83f22b4874ae7e270c', 'AccountSid': 'AC57706c516d0f3e3b2bad6a4ed7b2080a', 'From': 'whatsapp:+558481341213', 'ApiVersion': '2010-04-01'}
